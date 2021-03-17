@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMAGE TO PDF CONVERTER</title>
+</head>
+
+<body>
+    <input type="file" id="imagefile">
+    <canvas id="canvas" style="width: 400px; height: 400px;"></canvas>
+    <button id="button">DOWNLOAD PDF</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+    <script>
+
+        var imagefile = document.getElementById("imagefile")
+
+        var canvas = document.getElementById("canvas")
+
+        var button = document.getElementById("button")
+
+        button.onclick = handleImageToPdf
+
+        function handleImageToPdf() {
+
+            html2canvas(canvas, {
+                onrendered: function (canvas) {
+
+                    var imgData = canvas.toDataURL('image/png')
+
+                    var doc = new jsPDF('p', 'mm')
+                    doc.addImage(imgData, 'png', 10, 10)
+                    doc.save("YOUR PDF")
+                }
+
+
+            })
+
+        }
+
+        var ctx = canvas.getContext('2d')
+
+        imagefile.addEventListener("change", handleImage, false)
+
+        function handleImage(e) {
+
+            console.log(e)
+
+            var reader = new FileReader()
+
+            //lisen for reader event
+
+            reader.onload = function (event) {
+
+                var image = new Image()
+
+                image.onload = function () {
+
+                    canvas.width = image.width
+                    canvas.height = image.height
+                    ctx.drawImage(image, 0, 0)
+                }
+
+                image.src = event.target.result
+
+            }
+
+            reader.readAsDataURL(e.target.files[0])
+
+
+
+
+
+        }
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
